@@ -9,10 +9,10 @@ const routes = require("./routes");
 app.use(cors());
 app.use(express.json());
 
-// app.post("/a", (req, res) => {
-//   console.log(req.body);
-//   res.send(`Bonjour World! ${req.body}`);
-// });
+app.post("/a", (req, res) => {
+  console.log(req.body);
+  res.send(`Bonjour World! ${req.body}`);
+});
 
 app.use(routes);
 
