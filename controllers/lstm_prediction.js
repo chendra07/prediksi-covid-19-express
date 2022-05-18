@@ -60,8 +60,6 @@ function floatToInteger(dataArray) {
     dataArray[i] = parseInt(dataArray[i]);
   }
 
-  console.log("parsed: ", dataArray);
-
   return dataArray;
 }
 
@@ -69,8 +67,6 @@ function dataNormalization(dataArray) {
   const inputMax = dataArray.max();
   const inputMin = dataArray.min();
   const normalizedInputs = dataArray.sub(inputMin).div(inputMax.sub(inputMin));
-
-  console.log("normalized: ", normalizedInputs);
 
   return {
     inputs: normalizedInputs,
@@ -132,8 +128,6 @@ async function runModel(days) {
       //tambahan 1 index nilai prediksi yang paling baru
       //dan membuang 1 index data yang paling lama
     }
-
-    console.log("final: ", predictTemp);
 
     finalResult = [...filteredData, ...predictTemp]; //menggabungkan array prediksi dan data aktual
     // console.log("last: ", finalResult.reverse().slice(0, 5));
