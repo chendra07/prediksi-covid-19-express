@@ -170,28 +170,3 @@ exports.predicts = async (req, res, next) => {
     }
   }
 };
-
-//kesimpulan kenapa data prediksi positif harian hasilnya cenderung turun & data meninggal jadi tidak stabil hasilnya:
-
-//data meninggal menjadi tidak stabil karena penggunaan LSTM untuk memprediksi hasil memanfaatkan multivariate
-//Multivariate sendiri berarti mengajarkan LSTM untuk menerima 2 input atau lebih secara langsung
-//dalam kasus ini data yang diamati oleh LSTM adalah data meninggal & positif harian
-//data positif harian yang didapat cenderung dinamis (naik & turun) sementara data meninggal merupakan data yang stabil (hanya naik)
-//karena data positif harian juga dapat mempengaruhi nilai prediksi, maka hasil nilai kematian juga dapat berubah dan ini menjadikan
-//prediksi kematian menjadi tidak stabil & tidak akurat
-
-//tldr: data kematian terpengaruh oleh data positif harian yang nilainya tidak stabil.
-
-//data positif harian hasilnya cenderung turun karena data yang diambil merupakan data dari awal tahun 2021 - 2022
-//berdasarkan data yang diamati, memang data di akhir tahun cenderung turun dan hampir menyentuh angka 0 (nol) hal ini yang
-//menyebabkan prediksijuga terpengaruh nilainya (nilai cenderung turun bahkan sampai menyentuh nilai minus akibat dari data yang memang terus menurun).
-
-//tldr: datanya memang cenderung turun di akhir tahun berdasarkan batasan data yang digunakan untuk melatih & menguji model yang dibuat.
-
-//secara umum dapat dikatakan penelitian ini gagal dalam melakukan prediksi dengan baik karena beberapa alasan:
-// 1. Penggunaan multivariate tidak efektif dalam akurasi prediksi meskipun membantu dalam efisiensi waktu untuk melakukan prediksi.
-// 2. Data yang diprediksi menunjukan hasil yang terus menurun (bahkan bisa mencapai nilai minus) akibat data yang diamati memang cenderung turun.
-
-//question 4 u:
-//1. apakah data terbaru lebih diperhatian daripada data lama (pertanyaan ini terkait behavior dari LSTM sehingga data menjadi minus)?
-//2. apa fungsi activation? & why sigmoid/tanh?

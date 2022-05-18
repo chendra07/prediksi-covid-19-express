@@ -8,7 +8,6 @@ const index = function (req, res, next) {
 };
 
 router.route("/predict").post(async (req, res, next) => {
-  console.log("here???2");
   await lstm_prediction.predicts(req, res, next);
 });
 
