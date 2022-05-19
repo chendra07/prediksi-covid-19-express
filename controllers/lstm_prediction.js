@@ -63,9 +63,9 @@ function floatToInteger(dataArray) {
   return dataArray;
 }
 
-function dataNormalization(dataArray) {
-  const inputMax = dataArray.max();
-  const inputMin = dataArray.min();
+function dataNormalization(dataArray, maxInputValue, minInputValue) {
+  const inputMax = maxInputValue ? maxInputValue : dataArray.max();
+  const inputMin = minInputValue ? minInputValue : dataArray.min();
   const normalizedInputs = dataArray.sub(inputMin).div(inputMax.sub(inputMin));
 
   return {
@@ -95,15 +95,26 @@ async function runModel(days) {
   let [filteredData, valueOnly] = await filterCSV(covid_data); //lakukan filter pada objek & tanggal yang sesuai
   valueOnly = [valueOnly.slice(Math.max(valueOnly.length - basedDays, 0))]; //reshape data to (1,7,2)
 
+  let firstInput3D = tf.tensor3d(valueOnly);
+
+  let scaled_inputTensor = dataNormalization(firstInput3D); //lakukan scaling data 0-1 terlebih dahulu
+
+  console.log("data before: ", valueOnly);
+  console.log("data scaled: ", scaled_inputTensor.inputs.dataSync());
+
   finalResult = []; //hapus hasil prediksi yang lama
 
   try {
     for (let i = 0; i < days; i++) {
       let inputTensor = tf.tensor3d(valueOnly);
 
-      let scaled_inputTensor = dataNormalization(inputTensor); //lakukan scaling data 0-1 terlebih dahulu
+      let scaled_current = dataNormalization(
+        inputTensor,
+        scaled_inputTensor.inputMax,
+        scaled_inputTensor.inputMin
+      ); //lakukan scaling data 0-1 terlebih dahulu
 
-      let resultPrediction = model_lstm.predict(scaled_inputTensor.inputs); //lakukan prediksi dengan data yang di scaling
+      let resultPrediction = model_lstm.predict(scaled_current.inputs); //lakukan prediksi dengan data yang di scaling
 
       let x = dataUnNormalization(
         resultPrediction,
@@ -121,6 +132,8 @@ async function runModel(days) {
         isPredicted: true,
       }); //masukan data ke variabel sementara
 
+      console.log("value only: ", valueOnly);
+
       valueOnly[0].push(x); //menambahkan array prediksi pada index terakhir
       valueOnly[0].shift(); //menghapus index pertama
 
@@ -134,7 +147,7 @@ async function runModel(days) {
 
     finalResult.forEach(function (element, index) {
       element.key = index;
-      element.unix = moment(element.Tanggal).add(7, "hours").unix() * 1000;
+      element.unix = moment(element.Tanggal).unix() * 1000;
 
       // console.log("time: ", element.Tanggal);
       // console.log(
