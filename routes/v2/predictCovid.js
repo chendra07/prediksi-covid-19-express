@@ -1,6 +1,6 @@
 const response = require("../../components/response");
 const express = require("express");
-const lstm_prediction = require("../../controllers/v1/lstm_prediction");
+const lstm_prediction = require("../../controllers/v2/lstm_prediction");
 const router = express.Router();
 
 const index = function (req, res, next) {

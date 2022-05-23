@@ -14,6 +14,14 @@ router.use(
   require("./v1")
 );
 
+router.use(
+  "/v2",
+  function (req, res, next) {
+    next();
+  },
+  require("./v2")
+);
+
 router.all("/", index);
 router.all("*", index);
 

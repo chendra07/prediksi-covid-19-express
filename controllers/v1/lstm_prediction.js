@@ -9,7 +9,7 @@ const moment = require("moment");
 var momentTZ = require("moment-timezone");
 const fs = require("fs"); //file stream
 
-const response = require("../components/response");
+const response = require("../../components/response");
 
 const basedDays = 7;
 let finalResult = [];
@@ -70,21 +70,15 @@ function dataNormalization(dataArray, maxInputValue, minInputValue) {
 
   return {
     inputs: normalizedInputs,
-    // Return the min/max bounds so we can use them later.
     inputMax,
     inputMin,
   };
 }
 
 function dataUnNormalization(pred, inputMin, inputMax) {
-  // console.log("pred: ", pred);
   const unNorm = pred.mul(inputMax.sub(inputMin)).add(inputMin);
-
   let result = unNorm.dataSync();
-  // console.log("unNorm: ", result);
-
   result = floatToInteger(result);
-
   return result;
 }
 
@@ -123,14 +117,14 @@ async function runModel(days) {
       ); //kembalikan lagi data yang telah di scaling sebelumnya
 
       predictTemp.push({
-        Tanggal: moment("01/01/2022", "DD/MM/YYYY")
+        Tanggal: moment("01/01/2022", "DD/MM/YYYY") //data tanggal
           .local()
           .add(i + 1, "days")
           .format(),
-        Meninggal: x[0],
-        Positif_Harian: x[1],
-        isPredicted: true,
-      }); //masukan data ke variabel sementara
+        Meninggal: x[0], //data meninggal
+        Positif_Harian: x[1], //data positif harian
+        isPredicted: true, // properti untuk membedakan data aktual dan prediksi
+      });
 
       console.log("value only: ", valueOnly);
 

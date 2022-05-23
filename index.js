@@ -16,10 +16,6 @@ app.post("/a", (req, res) => {
 
 app.use(routes);
 
-app.get("/aaa", (req, res) => {
-  res.send("hello world");
-});
-
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
